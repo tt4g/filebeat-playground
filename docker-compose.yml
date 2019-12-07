@@ -1,0 +1,72 @@
+version: "3.7"
+
+services:
+  filebeat-playground-elasticsearch:
+    image: filebeat-playground-elasticsearch
+    container_name: filebeat-playground-elasticsearch-01
+    build:
+      context: ./docker/elasticsearch
+      dockerfile: Dockerfile
+    networks:
+      - filebeat-playground-elasticsearch-network
+    ports:
+      - 9200:9200
+      - 9300:9300
+    env_file: .elasticsearch.env
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+  filebeat-playground-kibana:
+    image: filebeat-playground-kibana
+    container_name: filebeat-playground-kibana
+    build:
+      context: ./docker/kibana
+      dockerfile: Dockerfile
+    depends_on:
+      - filebeat-playground-elasticsearch
+    networks:
+      - filebeat-playground-elasticsearch-network
+    ports:
+      - 5601:5601
+    env_file: .kibana.env
+
+  filebeat-playground-logstash:
+    image: filebeat-playground-logstash
+    container_name: filebeat-playground-logstash
+    build:
+      context: ./docker/logstash
+      dockerfile: Dockerfile
+    depends_on:
+      - filebeat-playground-elasticsearch
+    networks:
+      - filebeat-playground-elasticsearch-network
+    env_file: .logstash.env
+    volumes:
+      - ./logstash/pipeline/:/usr/share/logstash/pipeline/
+      - ./logstash/config/:/usr/share/logstash/config/
+      - ./var/logstash/:/var/log/logstash/
+
+  filebeat-playground-filebeat:
+    image: filebeat-playground-filebeat
+    container_name: filebeat-playground-filebeat
+    build:
+      context: ./docker/filebeat
+      dockerfile: Dockerfile
+    user: root
+    command: ./filebeat -e -c /usr/share/filebeat/filebeat.yml
+    depends_on:
+      - filebeat-playground-kibana
+      - filebeat-playground-logstash
+    networks:
+      - filebeat-playground-elasticsearch-network
+    env_file: .filebeat.env
+    volumes:
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ./var/filebeat/log/:/var/log/sample/
+
+networks:
+  filebeat-playground-elasticsearch-network:
+    name: filebeat-playground-elasticsearch-network
+    driver: bridge

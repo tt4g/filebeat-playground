@@ -1,0 +1,33 @@
+logging:
+  level: info
+  to_files: true
+  files:
+    path: /var/log/filebeat
+    name: filebeat
+    keepfiles: 7
+    permissions: 0644
+
+filebeat:
+  inputs:
+    - type: log
+      tags: ["sample"]
+      enabled: true
+      paths:
+        - /var/log/sample/*.log
+
+output:
+  logstash:
+    index: "filebeat-playground"
+    hosts: "${LOGSTASH_HOST}"
+    enabled: true
+    compression_level: 3
+    escape_html: false
+    loadbalance: false
+    worker: 1
+    ttl: 0
+    pipelining: 2
+    timeout: 30
+
+setup:
+  kibana:
+    host: "${KIBANA_HOST}"

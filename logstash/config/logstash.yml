@@ -1,0 +1,13 @@
+http:
+  host: 127.0.0.1
+  port: 9600
+log:
+  format: json
+  level: info
+node:
+  name: filebeat-playground-logstash
+pipeline:
+  unsafe_shutdown: false
+xpack.management.elasticsearch.hosts: ${ELASTICSEARCH_HOSTS}
+xpack.monitoring.elasticsearch.hosts: ${ELASTICSEARCH_HOSTS}
+xpack.monitoring.enabled: true
