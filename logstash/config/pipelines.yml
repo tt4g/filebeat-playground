@@ -1,5 +1,27 @@
-- pipeline.id: "sample"
-  path.config: "/usr/share/logstash/pipeline/sample.logstash.conf"
+- pipeline.id: "input_beats"
+  path.config: "/usr/share/logstash/pipeline/input/beats.conf"
+  pipeline.workers: 1
+  pipeline.batch.size: 125
+  config.reload.automatic: false
+  config.debug: false
+  config.support_escapes: false
+  queue.type: "memory"
+  queue.max_events: 0
+  queue.drain: false
+  dead_letter_queue.enable: false
+- pipeline.id: "output_elasticsearch"
+  path.config: "/usr/share/logstash/pipeline/output/elasticsearch.conf"
+  pipeline.workers: 1
+  pipeline.batch.size: 125
+  config.reload.automatic: false
+  config.debug: false
+  config.support_escapes: false
+  queue.type: "memory"
+  queue.max_events: 0
+  queue.drain: false
+  dead_letter_queue.enable: false
+- pipeline.id: "output_save_file"
+  path.config: "/usr/share/logstash/pipeline/output/save_file.conf"
   pipeline.workers: 1
   pipeline.batch.size: 125
   config.reload.automatic: false
