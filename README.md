@@ -27,7 +27,7 @@ baz qux
 Filebeat read `foo.log` and send Logstash.
 
 Logstash analyzes and parses the messages provided by Filebeat.
-After that, the messages is sent from Logstash to ElasticSearch and stored in 
+After that, the messages is sent from Logstash to ElasticSearch and stored in
 the `%{[@metadata][beat]}-%{[@metadata][version]}-sample-%{+YYYY.MM.dd}` index.
 In addition, the message is saved to `./var/logstash/sample_logstash_file/sample-%{+YYYY-MM-dd}.txt`.
 
@@ -40,7 +40,7 @@ Example: `./var/logstash/sample_logstash_file/sample-%{+YYYY-MM-dd}.txt`
 
 ## URL
 
-* Elasticsearch 
+* Elasticsearch
 
   http://filebeat-playground-elasticsearch-01:9200 or http://127.0.0.1:9200
 
